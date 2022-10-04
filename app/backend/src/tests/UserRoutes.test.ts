@@ -7,7 +7,7 @@ import { app } from '../app';
 
 import User from '../database/models/UserModel';
 
-import { validUserCrypto, BodyReqUser, InvalidUser }  from '../Mocks/MockUsers';
+import { validUserCrypto, BodyReqUser, InvalidUser, Role, Token }  from '../Mocks/MockUsers';
 
 chai.use(chaiHttp);
 
@@ -52,6 +52,40 @@ describe('Testa rota /login', () => {
 
         expect(res.status).to.be.equal(401);
         expect(res.body).to.be.deep.equal({message: 'Incorrect email or password'});
+      }
+    );
+  });
+});
+
+describe('Testando a rota login/validate', () => {
+  describe('Validação feita com sucesso', () => {
+    before(async () => {
+      sinon.stub(User, 'findOne').resolves(Role as User);
+    });
+
+    after(() => {
+      (User.findOne as sinon.SinonStub).restore();
+    });
+
+    it('Deve retornar status 200 e um token', async () => {
+      const res = await chai.request(app)
+        .get('/login/validate')
+        .set('authorization', Token.token);
+
+        expect(res.status).to.be.equal(200);
+        expect(res.body).to.be.deep.equal({ role: Role.role });
+      }
+    );
+  });
+
+  describe('Validação não realizada com sucesso', () => {
+    it('Retorna o erro "Invalid Token" ', async () => {
+        const res = await chai.request(app)
+        .get('/login/validate')
+        .set('authorization', 'TokenInvalido');
+
+        expect(res.status).to.be.equal(401);
+        expect(res.body).to.be.deep.equal({message: 'Invalid Token'});
       }
     );
   });

@@ -30,10 +30,13 @@ export default class UserService {
   };
 
   public validateLogin = async (token: string): Promise<unknown> => {
-    const newToken = jwt.verify(token, JWT_SECRET) as IToken;
-    const user = await this.model
-      .findOne({ where: { id: newToken.id }, raw: true }) as unknown as IUser;
-
-    return user.role as unknown as IUser;
+    try {
+      const newToken = jwt.verify(token, JWT_SECRET) as IToken;
+      const user = await this.model
+        .findOne({ where: { id: newToken.id }, raw: true }) as unknown as IUser;
+      return user.role as unknown as IUser;
+    } catch (error) {
+      throw new CustomError(401, 'Invalid Token');
+    }
   };
 }
