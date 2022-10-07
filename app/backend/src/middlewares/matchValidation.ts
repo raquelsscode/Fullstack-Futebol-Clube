@@ -3,8 +3,9 @@ import * as Jwt from 'jsonwebtoken';
 import IToken from '../interfaces/IToken';
 import CustomError from '../errors/CustomError';
 import TeamService from '../Services/TeamService';
+import 'dotenv/config';
 
-const JWT_SECRET = 'jwt_secret';
+const JWT_SECRET = process.env.JWT_SECRET || 'jwt_secret';
 
 const teamService = new TeamService();
 
@@ -18,6 +19,7 @@ const loginValidation = async (req: Request, _res: Response, next: NextFunction)
   }
 
   await teamService.getById(homeTeam);
+
   await teamService.getById(awayTeam);
 
   try {
