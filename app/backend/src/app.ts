@@ -16,9 +16,9 @@ class App {
     // Não remover essa rota
     this.app.get('/', (req, res) => res.json({ ok: true }));
     this.app.use('/login', UserRouter);
-    this.app.use(errorMiddleware);
     this.app.use('/teams', TeamRouter);
     this.app.use('/matches', MatchRouter);
+    this.app.use(errorMiddleware);
   }
 
   private config():void {

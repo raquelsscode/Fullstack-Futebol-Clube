@@ -8,7 +8,7 @@ const JWT_SECRET = 'jwt_secret';
 
 const teamService = new TeamService();
 
-const loginValidation = async (req: Request, res: Response, next: NextFunction) => {
+const loginValidation = async (req: Request, _res: Response, next: NextFunction) => {
   const { homeTeam, awayTeam } = req.body;
   const { authorization } = req.headers;
 
